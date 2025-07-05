@@ -9,20 +9,25 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+    /**
+     * Tabla de usuarios del sistema
+     * Almacena la información básica de autenticación de todos los usuarios
+     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->foreignId('role_id')->constrained('roles')->onDelete('restrict')->onUpdate('cascade');
+            $table->string('document_id', 8)->unique()->index(); // DNI como identificador único
             $table->string('password');
+            $table->boolean('is_active')->default(true)->index(); // Para desactivar usuarios sin eliminarlos
             $table->rememberToken();
             $table->timestamps();
+            $table->softDeletes(); // Soft deletes para mantener integridad referencial
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->string('document_id', 8)->primary(); // DNI como identificador único
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
