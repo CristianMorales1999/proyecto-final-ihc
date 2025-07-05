@@ -4,14 +4,12 @@ namespace App\Livewire\Settings;
 
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\Rule;
 use Livewire\Component;
 
 class Profile extends Component
 {
-    public string $name = '';
-
+    public string $first_name = '';
+    public string $last_name = '';
     public string $email = '';
 
     /**
@@ -19,8 +17,10 @@ class Profile extends Component
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        $user = Auth::user();
+        $this->first_name = $user->profile?->first_name ?? '';
+        $this->last_name = $user->profile?->last_name ?? '';
+        $this->email = $user->profile?->email ?? '';
     }
 
     /**
@@ -31,44 +31,18 @@ class Profile extends Component
         $user = Auth::user();
 
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-
-            'email' => [
-                'required',
-                'string',
-                'lowercase',
-                'email',
-                'max:255',
-                Rule::unique(User::class)->ignore($user->id),
-            ],
+            'first_name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255'],
         ]);
 
-        $user->fill($validated);
-
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
+        // Actualizar el perfil
+        if ($user->profile) {
+            $user->profile->update($validated);
+        } else {
+            $user->profile()->create($validated);
         }
 
-        $user->save();
-
-        $this->dispatch('profile-updated', name: $user->name);
-    }
-
-    /**
-     * Send an email verification notification to the current user.
-     */
-    public function resendVerificationNotification(): void
-    {
-        $user = Auth::user();
-
-        if ($user->hasVerifiedEmail()) {
-            $this->redirectIntended(default: route('dashboard', absolute: false));
-
-            return;
-        }
-
-        $user->sendEmailVerificationNotification();
-
-        Session::flash('status', 'verification-link-sent');
+        $this->dispatch('profile-updated', name: $user->full_name);
     }
 }

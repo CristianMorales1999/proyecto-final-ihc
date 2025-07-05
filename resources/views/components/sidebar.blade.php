@@ -8,8 +8,8 @@
         </a>
 
         <!-- Mi Perfil - Común para todos los roles -->
-        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#4c6a9a] hover:bg-[#eef4ff] hover:text-[#1366eb] {{ request()->routeIs('settings.profile') ? 'active-nav-link' : '' }}"
-           href="{{ route('settings.profile') }}">
+        <a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#4c6a9a] hover:bg-[#eef4ff] hover:text-[#1366eb] {{ request()->routeIs('perfil.edit') ? 'active-nav-link' : '' }}"
+           href="{{ route('perfil.edit') }}">
             <span class="material-symbols-outlined text-2xl">person</span>
             <span class="text-sm font-medium">Mi Perfil</span>
         </a>
