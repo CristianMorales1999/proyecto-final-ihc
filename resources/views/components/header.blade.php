@@ -2,8 +2,10 @@
     <div class="container mx-auto flex items-center justify-between whitespace-nowrap px-6 py-4">
         <!-- Logo y Nombre -->
         <div class="flex items-center gap-3 text-blue-600">
-            <span class="material-icons text-3xl">local_hospital</span>
-            <h1 class="text-2xl font-bold tracking-tight">HealthPlus</h1>
+            <a href="{{ route('home') }}" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <span class="material-icons text-3xl">local_hospital</span>
+                <h1 class="text-2xl font-bold tracking-tight">HealthPlus</h1>
+            </a>
         </div>
 
         <!-- Navegación para usuarios no autenticados -->
@@ -62,11 +64,8 @@
                         <a class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600" href="{{ route('settings.profile') }}">Mi Perfil</a>
                         <a class="block px-4 py-2 text-sm text-slate-600 hover:bg-blue-50 hover:text-blue-600" href="{{ route('settings.appearance') }}">Configuración</a>
                         
-                        @if(request()->routeIs('home'))
-                            <a class="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50" href="{{ route('dashboard') }}">Dashboard</a>
-                        @else
-                            <a class="block px-4 py-2 text-sm text-blue-600 hover:bg-blue-50" href="{{ route('home') }}">Inicio</a>
-                        @endif
+                        <a class="block px-4 py-2 text-sm {{ request()->routeIs('home') ? 'text-blue-600 font-medium' : 'text-slate-600' }} hover:bg-blue-50 hover:text-blue-600" href="{{ route('home') }}">Inicio</a>
+                        <a class="block px-4 py-2 text-sm {{ request()->routeIs('dashboard') ? 'text-blue-600 font-medium' : 'text-slate-600' }} hover:bg-blue-50 hover:text-blue-600" href="{{ route('dashboard') }}">Dashboard</a>
                         
                         <form method="POST" action="{{ route('logout') }}" class="block">
                             @csrf
